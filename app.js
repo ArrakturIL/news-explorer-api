@@ -11,7 +11,7 @@ const NotFoundErr = require('./errors/not-found-err');
 require('dotenv').config();
 
 const mainRoute = require('./routes');
-const { MONGODB_DEV_URL } = require('./utils/constants');
+const { MONGODB_DEV_URL, ERROR_MASSEGES_LIB } = require('./utils/constants');
 
 const { PORT = 3000, NODE_ENV, MONGODB_URL = MONGODB_DEV_URL } = process.env;
 
@@ -31,7 +31,7 @@ app.use(limiter);
 app.use('/', mainRoute);
 
 app.use('/', (req, res, next) => {
-  next(new NotFoundErr('Requested resource not found'));
+  next(new NotFoundErr(ERROR_MASSEGES_LIB.RESOURCE_NOT_FOUND));
 });
 
 app.use(errorLogger);

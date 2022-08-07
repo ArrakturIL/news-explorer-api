@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
-const { JWT_DEV_SECRET } = require('../utils/constants');
+const { JWT_DEV_SECRET, ERROR_MASSEGES_LIB } = require('../utils/constants');
 
 const User = require('../models/user');
 const NotFoundErr = require('../errors/not-found-err');
@@ -18,7 +18,7 @@ const getCurrentUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestErr('Validation failed.'));
+        next(new BadRequestErr(ERROR_MASSEGES_LIB.VALIDATION_FAILED));
       } else {
         next(err);
       }
@@ -42,8 +42,8 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') next(new BadRequestErr('Validation failed.'));
-      else if (err.code === 11000) next(new ConflictErr('User with this email already exists.'));
+      if (err.name === 'ValidationError') next(new BadRequestErr(ERROR_MASSEGES_LIB.VALIDATION_FAILED));
+      else if (err.code === 11000) next(new ConflictErr(ERROR_MASSEGES_LIB.EMAIL_CONFLICT));
       else next(err);
     });
 };
@@ -53,7 +53,7 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        throw new NotFoundErr('User not found.');
+        throw new NotFoundErr(ERROR_MASSEGES_LIB.USER_NOT_FOUND);
       }
       const token = jwt.sign(
         { _id: user._id },
@@ -74,7 +74,7 @@ const login = (req, res, next) => {
         });
     })
     .catch(() => {
-      next(new LoginErr('Authorization required.'));
+      next(new LoginErr(ERROR_MASSEGES_LIB.LOGIN_REQUIRED));
     });
 };
 

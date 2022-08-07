@@ -2,6 +2,7 @@ const Article = require('../models/article');
 
 const NotFoundErr = require('../errors/not-found-err');
 const ForbiddenErr = require('../errors/forbidden-err');
+const ERROR_MASSEGES_LIB = require('../utils/constants');
 
 const getArticles = (req, res, next) => {
   Article.find({})
@@ -11,7 +12,7 @@ const getArticles = (req, res, next) => {
         (article) => String(article.owner) === req.user.id,
       );
       if (userArticles.length === 0) {
-        next(new NotFoundErr('Article list is empty.'));
+        next(new NotFoundErr(ERROR_MASSEGES_LIB.LIST_NOT_FOUND));
         return;
       }
       res.status(200).send(userArticles);
@@ -35,11 +36,11 @@ const deleteArticle = (req, res, next) => {
     .select('owner')
     .then((foundArticle) => {
       if (!foundArticle) {
-        next(new NotFoundErr('Article not found.'));
+        next(new NotFoundErr(ERROR_MASSEGES_LIB.ARTICLE_NOT_FOUND));
         return;
       }
       if (String(foundArticle.owner) !== req.user.id) {
-        next(new ForbiddenErr("Forbidden, can't delete other's article."));
+        next(new ForbiddenErr(ERROR_MASSEGES_LIB.DELETE_FORBIDDEN));
         return;
       }
       Article.findByIdAndDelete(req.params.articleId)
