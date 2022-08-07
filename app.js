@@ -30,7 +30,7 @@ app.use(limiter);
 
 app.use('/', mainRoute);
 
-app.use('/', (req, res, next) => {
+app.get('*', (req, res, next) => {
   next(new NotFoundErr(ERROR_MASSEGES_LIB.RESOURCE_NOT_FOUND));
 });
 
