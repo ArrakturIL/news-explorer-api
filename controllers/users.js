@@ -11,6 +11,13 @@ const BadRequestErr = require('../errors/bad-request-err');
 const LoginErr = require('../errors/login-err');
 const ConflictErr = require('../errors/conflict-err');
 
+const getUserList = (req, res, next) => {
+  User.find({})
+    .then((users) => {
+      res.send(users);
+    }).catch(next);
+}
+
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -82,4 +89,5 @@ module.exports = {
   getCurrentUser,
   createUser,
   login,
+  getUserList,
 };
