@@ -30,9 +30,9 @@ app.use(limiter);
 
 app.use('/', mainRoute);
 
-// app.get('*', (req, res, next) => {
-//   next(new NotFoundErr(ERROR_MASSEGES_LIB.RESOURCE_NOT_FOUND));
-// });
+app.get('*', () => {
+  throw new NotFoundErr(ERROR_MASSEGES_LIB.RESOURCE_NOT_FOUND);
+});
 
 app.use(errorLogger);
 
