@@ -49,6 +49,7 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === 'ValidationError') next(new BadRequestErr(ERROR_MASSEGES_LIB.VALIDATION_FAILED));
       else if (err.code === 11000) next(new ConflictErr(ERROR_MASSEGES_LIB.EMAIL_CONFLICT));
       else next(err);
