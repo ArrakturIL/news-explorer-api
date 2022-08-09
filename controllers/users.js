@@ -15,8 +15,9 @@ const getUserList = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.send(users);
-    }).catch(next);
-}
+    })
+    .catch(next);
+};
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -36,11 +37,13 @@ const createUser = (req, res, next) => {
   const { email, name, password } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({
-      email,
-      name,
-      password: hash,
-    }))
+    .then((hash) =>
+      User.create({
+        email,
+        name,
+        password: hash,
+      })
+    )
     .then((user) => {
       res.status(200).send({
         email: user.email,
@@ -49,10 +52,12 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
-      if (err.name === 'ValidationError') next(new BadRequestErr(ERROR_MASSEGES_LIB.VALIDATION_FAILED));
-      else if (err.code === 11000) next(new ConflictErr(ERROR_MASSEGES_LIB.EMAIL_CONFLICT));
+      if (err.name === 'ValidationError')
+        next(new BadRequestErr(ERROR_MASSEGES_LIB.VALIDATION_FAILED));
+      else if (err.code === 11000)
+        next(new ConflictErr(ERROR_MASSEGES_LIB.EMAIL_CONFLICT));
       else next(err);
+      console.log(err);
     });
 };
 
@@ -66,7 +71,7 @@ const login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV_SECRET,
-        { expiresIn: '7d' },
+        { expiresIn: '7d' }
       );
       res
         .cookie('token', token, {
