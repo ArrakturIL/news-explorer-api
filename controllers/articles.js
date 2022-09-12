@@ -9,7 +9,7 @@ const getArticles = (req, res, next) => {
     .select('+owner')
     .then((articles) => {
       const userArticles = articles.filter(
-        (article) => String(article.owner) === req.user.id,
+        (article) => String(article.owner) === req.user._id,
       );
       if (userArticles.length === 0) {
         next(new NotFoundErr(ERROR_MASSEGES_LIB.LIST_NOT_FOUND));
@@ -23,7 +23,7 @@ const getArticles = (req, res, next) => {
 const createArticle = (req, res, next) => {
   Article.create({
     ...req.body,
-    owner: req.user.id,
+    owner: req.user._id,
   })
     .then((article) => {
       res.status(201).send(article);
@@ -39,7 +39,7 @@ const deleteArticle = (req, res, next) => {
         next(new NotFoundErr(ERROR_MASSEGES_LIB.ARTICLE_NOT_FOUND));
         return;
       }
-      if (String(foundArticle.owner) !== req.user.id) {
+      if (String(foundArticle.owner) !== req.user._id) {
         next(new ForbiddenErr(ERROR_MASSEGES_LIB.DELETE_FORBIDDEN));
         return;
       }
