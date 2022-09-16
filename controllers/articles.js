@@ -9,7 +9,7 @@ const getArticles = (req, res, next) => {
     .select('+owner')
     .then((articles) => {
       const userArticles = articles.filter(
-        (article) => String(article.owner) === req.user._id,
+        (article) => String(article.owner) === req.user._id
       );
       if (userArticles.length === 0) {
         next(new NotFoundErr(ERROR_MASSEGES_LIB.LIST_NOT_FOUND));
@@ -17,7 +17,10 @@ const getArticles = (req, res, next) => {
       }
       res.status(200).send(userArticles);
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next();
+    });
 };
 
 const createArticle = (req, res, next) => {
@@ -28,7 +31,10 @@ const createArticle = (req, res, next) => {
     .then((article) => {
       res.status(201).send(article);
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next();
+    });
 };
 
 const deleteArticle = (req, res, next) => {
@@ -47,9 +53,15 @@ const deleteArticle = (req, res, next) => {
         .then(() => {
           Article.find({}).then((allArticles) => res.send(allArticles));
         })
-        .catch(next);
+        .catch((err) => {
+          console.log(err);
+          next();
+        });
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next();
+    });
 };
 
 module.exports = {
